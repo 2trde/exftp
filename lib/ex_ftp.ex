@@ -38,7 +38,7 @@ defmodule ExFtp do
   will return {:ok, binary} or {:error, reason}
   """
   def get(pid, filename) do
-    :inets.recv_bin(pid, filename |> String.to_charlist)
+    :ftp.recv_bin(pid, filename |> String.to_charlist)
   end
 
   @doc """
