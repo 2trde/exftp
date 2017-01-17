@@ -3,9 +3,9 @@ defmodule ExFtp do
   Open connection to ftp by passing hostname, user and password.
   Returns the pid that has to be passed to execute commands on that connection
   """
-  def open(host, user, password) do
+  def open(host, user, password, options \\ []) do
     :inets.start
-    {:ok, pid} = :inets.start(:ftpc, host: host |> String.to_charlist, mode: :active)
+    {:ok, pid} = :inets.start(:ftpc, Keyword.merge(options, [host: host |> String.to_charlist]))
     :ok = :ftp.user(pid, user |> String.to_charlist, password |> String.to_charlist)
     pid
   end
