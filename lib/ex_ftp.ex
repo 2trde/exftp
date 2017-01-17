@@ -39,8 +39,9 @@ defmodule ExFtp do
   """
   def get(pid, filename) do
     :ftp.type(pid, :binary)
-    :ftp.recv_bin(pid, filename |> String.to_charlist)
+    result = :ftp.recv_bin(pid, filename |> String.to_charlist)
     :ftp.type(pid, :ascii)
+    result
   end
 
   @doc """
