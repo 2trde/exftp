@@ -20,13 +20,57 @@ defmodule ExFtp do
   @doc """
   change directory
   """
-  def cd(pid, path) do
+  def cd(pid, path, create_if_not_exists \\ false) do
+    IO.puts "create_if_not_exists: #{create_if_not_exists}"
+    if create_if_not_exists do
+      ensure_dir(pid, path)
+    end
+
     :ftp.cd(pid, path |> String.to_charlist)
+  end
+
+  def ensure_dir(pid, dir) when is_binary(dir) do
+    parts = dir |> String.split("/") |> Enum.filter(&(&1 != "")) |> Enum.reverse
+    ensure_dir(pid, parts)
+  end
+
+  def ensure_dir(pid, dir) when is_list(dir) do
+    IO.puts "ensure_dir: #{inspect list_to_dir(dir)}"
+    [leaf | parent] = dir
+
+    if length(parent) > 0 do
+      ensure_dir(pid, parent)
+    end
+    cd(pid, list_to_dir(dir))
+    |> case do
+      :ok ->
+        :ok
+      {:error, _} ->
+        IO.puts "mkdir: #{inspect list_to_dir(dir)}"
+        :ok = mkdir(pid, list_to_dir(dir))
+    end
+  end
+
+  defp list_to_dir(list) do
+    base =
+      list
+      |> Enum.reverse
+      |> Enum.join("/")
+
+    ("/" <> base)
+  end
+
+
+  @doc """
+  create directory
+  """
+  def mkdir(pid, path) do
+    :ftp.mkdir(pid, path |> String.to_charlist)
   end
 
   @doc """
   list files in directory
-  will return an list of %{file: filename, type: :directory|:file}
+  will return an list of %{name: filename, type: :directory|:file}
   """
   def ls(pid) do
     {:ok, listing} = :ftp.ls(pid)
@@ -40,6 +84,18 @@ defmodule ExFtp do
   def get(pid, filename) do
     :ftp.type(pid, :binary)
     result = :ftp.recv_bin(pid, filename |> String.to_charlist)
+    :ftp.type(pid, :ascii)
+    result
+  end
+
+
+  @doc """
+  put a file
+  will return :ok or {:error, reason}
+  """
+  def put(pid, binary, filename) do
+    :ftp.type(pid, :binary)
+    result = :ftp.send_bin(pid, binary, filename |> String.to_charlist)
     :ftp.type(pid, :ascii)
     result
   end
