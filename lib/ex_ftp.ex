@@ -21,7 +21,6 @@ defmodule ExFtp do
   change directory
   """
   def cd(pid, path, create_if_not_exists \\ false) do
-    IO.puts "create_if_not_exists: #{create_if_not_exists}"
     if create_if_not_exists do
       ensure_dir(pid, path)
     end
@@ -35,7 +34,6 @@ defmodule ExFtp do
   end
 
   def ensure_dir(pid, dir) when is_list(dir) do
-    IO.puts "ensure_dir: #{inspect list_to_dir(dir)}"
     [leaf | parent] = dir
 
     if length(parent) > 0 do
