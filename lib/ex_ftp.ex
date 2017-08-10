@@ -49,7 +49,7 @@ defmodule ExFtp do
   def cd(conn, path, create_if_not_exists \\ false)
   def cd({:ftp, pid}, path, create_if_not_exists) do
     if create_if_not_exists do
-      ensure_dir(pid, path)
+      ensure_dir({:ftp, pid}, path)
     end
     :ftp.cd(pid, path |> String.to_charlist)
   end
@@ -59,14 +59,14 @@ defmodule ExFtp do
 
   def ensure_dir({:ftp, pid}, dir) when is_binary(dir) do
     parts = dir |> String.split("/") |> Enum.filter(&(&1 != "")) |> Enum.reverse
-    ensure_dir(pid, parts)
+    ensure_dir({:ftp, pid}, parts)
   end
 
   def ensure_dir({:ftp, pid}, dir) when is_list(dir) do
     [leaf | parent] = dir
 
     if length(parent) > 0 do
-      ensure_dir(pid, parent)
+      ensure_dir({:ftp, pid}, parent)
     end
     cd(pid, list_to_dir(dir))
     |> case do
