@@ -47,33 +47,33 @@ defmodule ExFtp do
   change directory
   """
   def cd(conn, path, create_if_not_exists \\ false)
-  def cd({:ftp, pid}, path, create_if_not_exists) do
+  def cd({:ftp, pid} = conn, path, create_if_not_exists) do
     if create_if_not_exists do
-      ensure_dir({:ftp, pid}, path)
+      ensure_dir(conn, path)
     end
-    :ftp.cd({:ftp, pid}, path |> String.to_charlist)
+    :ftp.cd(pid, path |> String.to_charlist)
   end
   def cd({:sftp, _connection_ref, _pid}, path, create_if_not_exists) do
     raise "cd for sftp not implemented"
   end
 
-  def ensure_dir({:ftp, pid}, dir) when is_binary(dir) do
+  def ensure_dir({:ftp, _pid} = conn, dir) when is_binary(dir) do
     parts = dir |> String.split("/") |> Enum.filter(&(&1 != "")) |> Enum.reverse
-    ensure_dir({:ftp, pid}, parts)
+    ensure_dir(conn, parts)
   end
 
-  def ensure_dir({:ftp, pid}, dir) when is_list(dir) do
+  def ensure_dir({:ftp, pid} = conn, dir) when is_list(dir) do
     [leaf | parent] = dir
 
     if length(parent) > 0 do
-      ensure_dir({:ftp, pid}, parent)
+      ensure_dir(conn, parent)
     end
-    cd({:ftp, pid}, list_to_dir(dir))
+    cd(conn, list_to_dir(dir))
     |> case do
       :ok ->
         :ok
       {:error, _} ->
-        :ok = mkdir({:ftp, pid}, list_to_dir(dir))
+        :ok = mkdir(conn, list_to_dir(dir))
     end
   end
 
