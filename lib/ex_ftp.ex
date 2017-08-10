@@ -73,7 +73,7 @@ defmodule ExFtp do
       :ok ->
         :ok
       {:error, _} ->
-        :ok = mkdir(pid, list_to_dir(dir))
+        :ok = mkdir({:ftp, pid}, list_to_dir(dir))
     end
   end
 
