@@ -6,7 +6,7 @@ defmodule ExFtp do
   def open(host, user, password, options \\ [])
   def open(host, user, password, [mode: :sftp]) do
     :ok = :ssh.start()
-    {:ok, channel_pid, connection} = :ssh_sftp.start_channel(s_to_l(host), [user: s_to_l(user), password: s_to_l(password)])
+    {:ok, channel_pid, connection} = :ssh_sftp.start_channel(s_to_l(host), [user: s_to_l(user), password: s_to_l(password), silently_accept_hosts: true])
     {:sftp, channel_pid, connection}
   end
   def open(host, user, password, options) do
