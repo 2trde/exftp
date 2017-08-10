@@ -51,7 +51,7 @@ defmodule ExFtp do
     if create_if_not_exists do
       ensure_dir({:ftp, pid}, path)
     end
-    :ftp.cd(pid, path |> String.to_charlist)
+    :ftp.cd({:ftp, pid}, path |> String.to_charlist)
   end
   def cd({:sftp, _connection_ref, _pid}, path, create_if_not_exists) do
     raise "cd for sftp not implemented"
@@ -68,7 +68,7 @@ defmodule ExFtp do
     if length(parent) > 0 do
       ensure_dir({:ftp, pid}, parent)
     end
-    cd(pid, list_to_dir(dir))
+    cd({:ftp, pid}, list_to_dir(dir))
     |> case do
       :ok ->
         :ok
