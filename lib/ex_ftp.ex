@@ -52,6 +52,10 @@ defmodule ExFtp do
       ensure_dir(conn, path)
     end
     :ftp.cd(pid, path |> String.to_charlist)
+    |> case do
+      {:error, :epath} -> {:error, "cant cd to #{path}, dir does not exist"}
+      whatelse -> whatelse
+    end
   end
   def cd({:sftp, _connection_ref, _pid}, path, create_if_not_exists) do
     raise "cd for sftp not implemented"
