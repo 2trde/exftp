@@ -133,6 +133,22 @@ defmodule ExFtp do
     end)
   end
 
+
+  def is_directory?({:ftp, pid}, path) do
+    :ftp.ls(pid)
+    |> case do
+      {:ok, list} -> true
+      _           -> false
+    end
+  end
+  def is_directory?({:sftp, pid, _}, path) do
+    :ssh_sftp.list_dir(pid, s_to_l(path))
+    |> case do
+      {:ok, list} -> true
+      _           -> false
+    end
+  end
+
   @doc """
   getrieve a file
   will return {:ok, binary} or {:error, reason}
