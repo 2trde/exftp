@@ -35,6 +35,8 @@ defmodule Ftp.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      {:timex, "~> 3.0"},
+    ]
   end
 end

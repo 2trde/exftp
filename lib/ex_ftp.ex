@@ -57,7 +57,7 @@ defmodule ExFtp do
       whatelse -> whatelse
     end
   end
-  def cd({:sftp, _connection_ref, _pid}, path, create_if_not_exists) do
+  def cd({:sftp, _connection_ref, _pid}, _path, _) do
     raise "cd for sftp not implemented"
   end
 
@@ -66,8 +66,8 @@ defmodule ExFtp do
     ensure_dir(conn, parts)
   end
 
-  def ensure_dir({:ftp, pid} = conn, dir) when is_list(dir) do
-    [leaf | parent] = dir
+  def ensure_dir({:ftp, _pid} = conn, dir) when is_list(dir) do
+    [_ | parent] = dir
 
     if length(parent) > 0 do
       ensure_dir(conn, parent)
@@ -109,7 +109,7 @@ defmodule ExFtp do
     {:ok, listing} = :ftp.ls(pid)
     parse_ls(listing |> List.to_string)
   end
-  def ls({:sftp, _, pid}) do
+  def ls({:sftp, _, _pid}) do
     raise "ls without path not implemented in sftp"
   end
 
@@ -134,18 +134,18 @@ defmodule ExFtp do
   end
 
 
-  def is_directory?({:ftp, pid}, path) do
+  def is_directory?({:ftp, pid}, _path) do
     :ftp.ls(pid)
     |> case do
-      {:ok, list} -> true
-      _           -> false
+      {:ok, _} -> true
+      _        -> false
     end
   end
   def is_directory?({:sftp, pid, _}, path) do
     :ssh_sftp.list_dir(pid, s_to_l(path))
     |> case do
-      {:ok, list} -> true
-      _           -> false
+      {:ok, _} -> true
+      _        -> false
     end
   end
 
