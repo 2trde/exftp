@@ -121,7 +121,7 @@ defmodule ExFtp do
     {:ok, list} = :ssh_sftp.list_dir(pid, s_to_l(path))
     list
     |> Enum.map(&List.to_string/1)
-    |> Enum.filter(&(!&1 in [".", ".."]))
+    |> Enum.filter(&(&1 not in [".", ".."]))
     |> Enum.map(fn e ->
       :ssh_sftp.opendir(pid, s_to_l("#{path}/#{e}"))
       |> case do
