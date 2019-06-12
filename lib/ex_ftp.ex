@@ -106,8 +106,15 @@ defmodule ExFtp do
   will return an list of %{name: filename, type: :directory|:file}
   """
   def ls({:ftp, pid}) do
-    {:ok, listing} = :ftp.ls(pid)
-    parse_ls(listing |> List.to_string)
+    :ftp.ls(pid)
+    |> case do
+      {:ok, listing} -> 
+        parse_ls(listing |> List.to_string)
+      :ok ->
+        []
+      err ->
+        err
+    end
   end
   def ls({:sftp, _, _pid}) do
     raise "ls without path not implemented in sftp"
