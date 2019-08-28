@@ -1,4 +1,14 @@
 defmodule ExFtp do
+  def _split_host_port(host) do
+    String.split(host, ":")
+    |> case do
+      [host, port] ->
+        {host, String.to_integer(port)}
+      [host] ->
+        {host, nil}
+    end
+  end
+
   @doc """
   Open connection to ftp by passing hostname, user and password.
   Returns the pid that has to be passed to execute commands on that connection
@@ -8,7 +18,8 @@ defmodule ExFtp do
     open(host, user, password, Keyword.get(options, :mode), options)
   end
   def open(host, user, password, :sftp, options) do
-    port = Keyword.get(options, :port, 22)
+    {host, port} = _split_host_port(host)
+    port = port || Keyword.get(options, :port, 22)
     :ok = :ssh.start()
     {:ok, channel_pid, connection} = :ssh_sftp.start_channel(s_to_l(host), port, [user: s_to_l(user), password: s_to_l(password), silently_accept_hosts: true])
     {:sftp, channel_pid, connection}
