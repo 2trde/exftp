@@ -17,19 +17,25 @@ defmodule ExFtp do
   def open(host, user, password, options \\ [])
 
   def open(host, user, password, options) do
-    open(host, user, password, Keyword.get(options, :mode), options)
+    open(host, user, password, Keyword.get(options, :mode), Keyword.delete(options, :mode))
   end
 
   def open(host, user, password, :sftp, options) do
     {host, port} = _split_host_port(host)
     port = port || Keyword.get(options, :port, 22)
+
     :ok = :ssh.start()
 
     {:ok, channel_pid, connection} =
-      :ssh_sftp.start_channel(s_to_l(host), port,
-        user: s_to_l(user),
-        password: s_to_l(password),
-        silently_accept_hosts: true
+      :ssh_sftp.start_channel(
+        s_to_l(host),
+        port,
+        [
+          user: s_to_l(user),
+          password: s_to_l(password),
+          silently_accept_hosts: true
+        ] ++
+          Keyword.delete(options, :port)
       )
 
     {:sftp, channel_pid, connection}
