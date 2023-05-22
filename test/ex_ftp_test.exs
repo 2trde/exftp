@@ -18,6 +18,20 @@ defmodule FtpTest do
     ] = list
   end
 
+  test "parse_ls filename with spaces" do
+    list =
+      """
+      drwxr-xr-x   49 1000       ftpgroup         1666 Jan 11 10:02 Foo Bar1.jpg
+      drwxr-xr-x   49 1000       ftpgroup         1666 Jan 11 10:02 Foo Bar2.jpg
+      """
+      |> ExFtp.parse_ls()
+
+    [
+      %{name: "Foo Bar1.jpg"},
+      %{name: "Foo Bar2.jpg"},
+    ] = list
+  end
+
   test "parse_ls_line for name" do
     %{name: "TMBJJ9NE3E0068343"} =
       ExFtp.parse_ls_line(

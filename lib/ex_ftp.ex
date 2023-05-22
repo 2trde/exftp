@@ -235,7 +235,7 @@ defmodule ExFtp do
   end
 
   def parse_ls_line(line) do
-    ~r/([di-])[rwx-]{9,9}.+ (.+)/
+    ~r/([di-])[rwx-]{9,9}.+\d\d:\d\d (.+)/
     |> Regex.run(line)
     |> parse_ls_line(line)
   end
