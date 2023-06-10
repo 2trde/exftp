@@ -146,7 +146,8 @@ defmodule ExFtp do
     :ftp.ls(pid)
     |> case do
       {:ok, listing} ->
-        parse_ls(listing |> List.to_string())
+        IO.inspect(listing, label: "listing")
+        parse_ls_line(listing |> List.to_string())
 
       :ok ->
         []
@@ -235,24 +236,7 @@ defmodule ExFtp do
   end
 
   def parse_ls_line(line) do
-    ~r/([di-])[rwx-]{9,9}.+\d\d:\d\d (.+)/
-    |> Regex.run(line)
-    |> parse_ls_line(line)
-  end
-
-  def parse_ls_line([_all, type, name], _line) do
-    %{
-      name: name,
-      type:
-        case type do
-          "d" -> :directory
-          _ -> :file
-        end
-    }
-  end
-
-  def parse_ls_line(nil, line) do
-    raise "failed to parse ftp ls line: #{line}"
+    ExFtp.ParseLine.parse(line)
   end
 
   def parse_time(timestr) do
