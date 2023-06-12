@@ -3,6 +3,7 @@ defmodule ExFtp.ParseLine do
 
   terminal :permissions, chars: [?d, ?r, ?w, ?x, ?-], min: 10, max: 10, prio: 0
   terminal :time, chars: [?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?:], min: 5, max: 5, prio: 0
+  terminal :string, chars: [?a..?z, ?A..?Z, ?0..?9, ?., ?-, ?_], prio: 1
 
   lr skip_whitespaces: true do
     # drwxr-xr-x   49 1000       ftpgroup         1666 Jan 11 10:02 TMBJJ9NE3E0068343
@@ -15,11 +16,11 @@ defmodule ExFtp.ParseLine do
         }
     end
 
-    Filename <- :text = fn [t] -> t end
     Filename <- :integer = fn [i] -> "#{i}" end
+    Filename <- :string = fn [name] -> name  end
 
     User <- :integer
-    User <- :text
+    User <- :string = fn [u] -> u end
 
     Size <- :integer
 

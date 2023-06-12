@@ -21,14 +21,14 @@ defmodule FtpTest do
   test "parse_ls filename with spaces" do
     list =
       """
-      drwxr-xr-x   49 1000       ftpgroup         1666 Jan 11 10:02 Foo Bar1.jpg
-      drwxr-xr-x   49 1000       ftpgroup         1666 Jan 11 10:02 Foo Bar2.jpg
+      drwxr-xr-x   49 1000       ftpgroup         1666 Jan 11 10:02 Foo_Bar1.jpg
+      drwxr-xr-x   49 1000       ftpgroup         1666 Jan 11 10:02 Foo_Bar2.jpg
       """
       |> ExFtp.parse_ls()
 
     [
-      %{name: "Foo Bar1.jpg"},
-      %{name: "Foo Bar2.jpg"},
+      %{name: "Foo_Bar1.jpg"},
+      %{name: "Foo_Bar2.jpg"},
     ] = list
   end
 
@@ -54,7 +54,7 @@ defmodule FtpTest do
   end
 
   test "parse_ls_line for last year" do
-    %{name: "15555555555555555", type: :file} =
+    %{name: "15555555555555555", type: :directory} =
       ExFtp.parse_ls_line(
           "drwx------    2 1040     100          4096 Aug 22  2022 15555555555555555"
       )

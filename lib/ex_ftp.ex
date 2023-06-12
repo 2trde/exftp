@@ -236,7 +236,8 @@ defmodule ExFtp do
   end
 
   def parse_ls_line(line) do
-    ExFtp.ParseLine.parse(line)
+    {:ok, map} = ExFtp.ParseLine.parse(line)
+    map
   end
 
   def parse_time(timestr) do
