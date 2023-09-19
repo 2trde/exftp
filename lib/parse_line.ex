@@ -18,6 +18,7 @@ defmodule ExFtp.ParseLine do
 
     Filename <- :integer = fn [i] -> "#{i}" end
     Filename <- :string = fn [name] -> name  end
+    Filename <- Filename + :string = fn [name1, name2] -> name1 <> " " <> name2 end
 
     User <- :integer
     User <- :string = fn [u] -> u end

@@ -31,4 +31,12 @@ defmodule ExFtp.ParseLineTest do
       )
   end
 
+
+  test "spaces in filename" do
+    assert {:ok, %{name: "DAT-VIN Datenblatt.pdf", type: :file, timestamp: ~U[2023-09-18 15:23:00Z]}} =
+      parse(
+          "-rw-rw-r--    1 1004     1004       146786 Sep 18 15:23 DAT-VIN Datenblatt.pdf"
+      )
+  end
+
 end
