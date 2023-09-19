@@ -39,4 +39,11 @@ defmodule ExFtp.ParseLineTest do
       )
   end
 
+  test "parenthesis in filename" do
+    assert {:ok, %{name: "066ZA0172101 (1).pdf", timestamp: ~U[2023-09-18 15:23:00Z], type: :file}} =
+      parse(
+          "-rw-rw-r--    1 1004     1004       146101 Sep 18 15:23 066ZA0172101 (1).pdf"
+      )
+  end
+
 end

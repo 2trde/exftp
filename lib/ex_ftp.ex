@@ -236,6 +236,7 @@ defmodule ExFtp do
   end
 
   def parse_ls_line(line) do
+    #IO.puts "parsing line: #{line}"
     {:ok, map} = ExFtp.ParseLine.parse(line)
     map
   end
