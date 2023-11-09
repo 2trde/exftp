@@ -43,7 +43,7 @@ defmodule ExFtp do
 
   def open(host, user, password, _, options) do
     :inets.start()
-    {:ok, pid} = :inets.start(:ftp, Keyword.merge(options, host: host |> String.to_charlist()))
+    {:ok, pid} = :ftp.open(host |> String.to_charlist())
     :ok = :ftp.user(pid, user |> String.to_charlist(), password |> String.to_charlist())
     {:ftp, pid}
   end
@@ -57,7 +57,7 @@ defmodule ExFtp do
   end
 
   def close({:ftp, pid}) do
-    :inets.stop(:ftp, pid)
+    :ftp.close(pid)
   end
 
   defp s_to_l(s) do
