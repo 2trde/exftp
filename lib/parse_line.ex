@@ -65,7 +65,7 @@ defmodule ExFtp.ParseLine do
     Month <- "Sep" = fn _ -> 9 end
     Month <- "Oct" = fn _ -> 10 end
     Month <- "Nov" = fn _ -> 11 end
-    Month <- "Dez" = fn _ -> 12 end
+    Month <- "Dec" = fn _ -> 12 end
   end
 
 end
